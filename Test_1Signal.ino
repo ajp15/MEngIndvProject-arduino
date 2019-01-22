@@ -15,6 +15,6 @@ void loop() {
   // print to serial monitor
   Serial.println(mV);
 
-  // delat 20ms
+  // delay 20ms
   delay(20);
 }
