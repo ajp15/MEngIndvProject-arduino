@@ -7,9 +7,8 @@
   #include <SoftwareSerial.h>
 #endif
 
-#define FACTORYRESET_ENABLE         1  // change to 0 when deploying project
+#define FACTORYRESET_ENABLE         0  // change to 0 when deploying project. allows the module to bond with ipad
 #define MINIMUM_FIRMWARE_VERSION    "0.6.6"
-#define MODE_LED_BEHAVIOUR          "SPI" //LED activity, valid options are "DISABLE" or "MODE" or "BLEUART" or "HWUART"  or "SPI"  or "MANUAL"
 
 // Create the bluefruit object,
 // hardware SPI, using SCK/MOSI/MISO hardware SPI pins and then user selected CS/IRQ/RST
@@ -56,12 +55,13 @@ void setup() {
       delay(500);
   }
 
- // LED Activity command is only supported from 0.6.6
-  if ( ble.isVersionAtLeast(MINIMUM_FIRMWARE_VERSION) )
-  {
-    // Change Mode LED Activity
-    ble.sendCommandCheckOK("AT+HWModeLED=" MODE_LED_BEHAVIOUR);
-  } 
+  /* Change the device name to make it easier to find */
+  if (! ble.sendCommandCheckOK(F( "AT+GAPDEVNAME=Aishwarya's Bluefruit" )) ) {
+    error(F("Could not set device name?"));
+  }
+
+  /* Set module to DATA mode */
+  ble.setMode(BLUEFRUIT_MODE_DATA);
   
 }
 
@@ -79,7 +79,6 @@ void loop() {
   String data = String(sensorVal) + " " + String(gndVal) + " " + String(vVal);
 
   /* send to bluefruit */
-  ble.print("AT+BLEUARTTX=" data);
   ble.println(data);
 
   // check response status
@@ -87,5 +86,5 @@ void loop() {
     Serial.println(F("Failed to send?"));
   }
 
-  delay(2000);
+  delay(200);
 }
