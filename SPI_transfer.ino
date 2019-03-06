@@ -27,7 +27,6 @@ int Vpin = A1;
 /**************************************************************************/
 
 void setup() {
-  // put your setup code here, to run once:
 
   Serial.begin(115200);
 
@@ -69,14 +68,14 @@ void setup() {
 /**************************************************************************/
 
 void loop() {
-  // put your main code here, to run repeatedly:
 
   /* read signal from input on arduino nano */
+  unsigned long time = millis();
   int sensorVal = map(analogRead(potPin), 0, 1023, 0, 5000);
   int gndVal = map(analogRead(GNDpin), 0, 1023, 0, 5000);
   int vVal = map(analogRead(Vpin), 0, 1023, 0, 5000);
 
-  String data = String(sensorVal) + " " + String(gndVal) + " " + String(vVal);
+  String data = String(time) + " " + String(sensorVal) + " " + String(gndVal) + " " + String(vVal) + "#";
 
   /* send to bluefruit */
   ble.println(data);
@@ -86,5 +85,5 @@ void loop() {
     Serial.println(F("Failed to send?"));
   }
 
-  delay(200);
+  delay(500);
 }
