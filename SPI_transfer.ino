@@ -78,12 +78,13 @@ void loop() {
   String data = String(time) + " " + String(sensorVal) + " " + String(gndVal) + " " + String(vVal) + "#";
 
   /* send to bluefruit */
-  ble.println(data);
+  //ble.print("AT+BLEUARTTX=");
+  ble.println("abcdefghijklmnopqrstuvwxyz0123");
 
   // check response status
-  if (! ble.waitForOK() ) {
+  /*if (! ble.waitForOK() ) {
     Serial.println(F("Failed to send?"));
-  }
+  }*/
 
-  delay(500);
+  delay(1000);
 }
