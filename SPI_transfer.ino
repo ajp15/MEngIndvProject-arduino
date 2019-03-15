@@ -20,9 +20,9 @@ void error(const __FlashStringHelper*err) {
   while (1);
 }
 
-int potPin = A7;
-int GNDpin = A0;
-int Vpin = A1;
+int Kpin = A7;
+int Gpin = A0;
+int Lpin = A1;
 
 /**************************************************************************/
 
@@ -69,22 +69,25 @@ void setup() {
 
 void loop() {
 
-  /* read signal from input on arduino nano */
-  unsigned long time = millis();
-  int sensorVal = map(analogRead(potPin), 0, 1023, 0, 5000);
-  int gndVal = map(analogRead(GNDpin), 0, 1023, 0, 5000);
-  int vVal = map(analogRead(Vpin), 0, 1023, 0, 5000);
+  // read signal from potassium pin and send
+  unsigned long timeK = millis();
+  int Kval = map(analogRead(Kpin), 0, 1023, 0, 5000);
+  String Koutput = "K" + String(timeK) + " " + String(Kval);
+  ble.print(Koutput);
+  delay(200);
 
-  String data = String(time) + " " + String(sensorVal) + " " + String(gndVal) + " " + String(vVal) + "#";
+  // read signal from glucose pin and send
+  unsigned long timeG = millis();
+  int Gval = map(analogRead(Gpin), 0, 1023, 0, 5000);
+  String Goutput = "G" + String(timeG) + " " + String(Gval);
+  ble.print(Goutput);
+  delay(200);
 
-  /* send to bluefruit */
-  //ble.print("AT+BLEUARTTX=");
-  ble.println("abcdefghijklmnopqrstuvwxyz0123");
+  // read signal from lactate pin and send
+  unsigned long timeL = millis();
+  int Lval = map(analogRead(Lpin), 0, 1023, 0, 5000);
+  String Loutput = "L" + String(timeG) + " " + String(Lval);
+  ble.print(Loutput); 
 
-  // check response status
-  /*if (! ble.waitForOK() ) {
-    Serial.println(F("Failed to send?"));
-  }*/
-
-  delay(1000);
+  delay(600);
 }
