@@ -4,7 +4,6 @@
 #include "BluefruitConfig.h"
 #include <Filters.h>
 
-
 #if SOFTWARE_SERIAL_AVAILABLE
   #include <SoftwareSerial.h>
 #endif
@@ -90,25 +89,16 @@ void loop() {
   int Kval = map(K, 0, 1023, 0, 5000);
   Ksum = Ksum + Kval;
   Kcount = Kcount + 1;
-  /*Serial.println("K");
-  Serial.println(Kcount);
-  Serial.println(Ksum);*/
 
   int G = lowpassFilterG.input(analogRead(Gpin));
   int Gval = map(G, 0, 1023, 0, 5000);
   Gsum = Gsum + Gval;
   Gcount = Gcount + 1;
-  /*Serial.println("G");
-  Serial.println(Gcount);
-  Serial.println(Gsum);*/
 
   int L = lowpassFilterL.input(analogRead(Lpin));
   int Lval = map(L, 0, 1023, 0, 5000);
   Lsum = Lsum + Lval;
   Lcount = Lcount + 1;
-  /*Serial.println("L");
-  Serial.println(Lcount);
-  Serial.println(Lsum);*/
 
   if (i == 1) {
 
@@ -116,7 +106,6 @@ void loop() {
     int avgK = Ksum/Kcount;
     String Koutput = "K" + String(T) + " " + String(avgK) + "\n";
     ble.print(Koutput);
-    //Serial.println(Koutput);
 
     // reset variables
     Ksum = 0;
@@ -129,7 +118,6 @@ void loop() {
     int avgG = Gsum/Gcount;
     String Goutput = "G" + String(T) + " " + String(avgG) + "\n";
     ble.print(Goutput);
-    //Serial.println(Goutput);
 
     // reset variables
     Gsum = 0;
@@ -142,7 +130,6 @@ void loop() {
     int avgL = Lsum/Lcount;
     String Loutput = "L" + String(T) + " " + String(avgL) + "\n";
     ble.print(Loutput);
-    //Serial.println(Loutput);
 
     // reset variables
     Lsum = 0;
