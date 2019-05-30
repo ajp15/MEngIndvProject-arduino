@@ -25,6 +25,13 @@ void error(const __FlashStringHelper*err) {
 int Kpin = A7;
 int Gpin = A0;
 int Lpin = A1;
+int i = 1;
+int Ksum = 0;
+int Gsum = 0;
+int Lsum = 0;
+int Kcount = 0;
+int Gcount = 0;
+int Lcount = 0;
 
 float filterfreq = 1.0;
 FilterOnePole lowpassFilterK(LOWPASS, filterfreq);
@@ -76,31 +83,74 @@ void setup() {
 
 void loop() {
 
-  // read signal from potassium pin and send
-  unsigned long timeK = millis();
+  unsigned long T = millis();
+
+  // read input signals and store in array
   int K = lowpassFilterK.input(analogRead(Kpin));
   int Kval = map(K, 0, 1023, 0, 5000);
-  String Koutput = "K" + String(timeK) + " " + String(Kval) + "\n";
-  Serial.print(Koutput);
-  ble.print(Koutput);
-  delay(200);
+  Ksum = Ksum + Kval;
+  Kcount = Kcount + 1;
+  /*Serial.println("K");
+  Serial.println(Kcount);
+  Serial.println(Ksum);*/
 
-  // read signal from glucose pin and send
-  unsigned long timeG = millis();
   int G = lowpassFilterG.input(analogRead(Gpin));
   int Gval = map(G, 0, 1023, 0, 5000);
-  String Goutput = "G" + String(timeG) + " " + String(Gval) + "\n";
-  Serial.print(Goutput);
-  ble.print(Goutput);
-  delay(200);
+  Gsum = Gsum + Gval;
+  Gcount = Gcount + 1;
+  /*Serial.println("G");
+  Serial.println(Gcount);
+  Serial.println(Gsum);*/
 
-  // read signal from lactate pin and send
-  unsigned long timeL = millis();
   int L = lowpassFilterL.input(analogRead(Lpin));
   int Lval = map(L, 0, 1023, 0, 5000);
-  String Loutput = "L" + String(timeG) + " " + String(Lval) + "\n";
-  Serial.print(Loutput);
-  ble.print(Loutput); 
+  Lsum = Lsum + Lval;
+  Lcount = Lcount + 1;
+  /*Serial.println("L");
+  Serial.println(Lcount);
+  Serial.println(Lsum);*/
 
-  delay(600);
+  if (i == 1) {
+
+    // send K data
+    int avgK = Ksum/Kcount;
+    String Koutput = "K" + String(T) + " " + String(avgK) + "\n";
+    ble.print(Koutput);
+    //Serial.println(Koutput);
+
+    // reset variables
+    Ksum = 0;
+    Kcount = 0;
+    
+  } 
+  else if (i == 3) {
+
+    // send G data
+    int avgG = Gsum/Gcount;
+    String Goutput = "G" + String(T) + " " + String(avgG) + "\n";
+    ble.print(Goutput);
+    //Serial.println(Goutput);
+
+    // reset variables
+    Gsum = 0;
+    Gcount = 0;
+    
+  }
+  else if (i == 5) {
+
+    // send L data
+    int avgL = Lsum/Lcount;
+    String Loutput = "L" + String(T) + " " + String(avgL) + "\n";
+    ble.print(Loutput);
+    //Serial.println(Loutput);
+
+    // reset variables
+    Lsum = 0;
+    Lcount = 0;
+    // reset iterator
+    i = 0;
+  }
+
+  i = i + 1;
+  delay(200);
 }
